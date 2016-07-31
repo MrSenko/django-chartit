@@ -18,7 +18,8 @@ class Migration(migrations.Migration):
             name='DailyWeather',
             fields=[
                 ('id', models.AutoField(auto_created=True,
-                                        primary_key=True, serialize=False, verbose_name='ID')),
+                                        primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('month', models.IntegerField()),
                 ('day', models.IntegerField()),
                 ('temperature', models.DecimalField(
@@ -31,7 +32,8 @@ class Migration(migrations.Migration):
             name='MonthlyWeatherByCity',
             fields=[
                 ('id', models.AutoField(auto_created=True,
-                                        primary_key=True, serialize=False, verbose_name='ID')),
+                                        primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('month', models.IntegerField()),
                 ('boston_temp', models.DecimalField(
                     decimal_places=1, max_digits=5)),
@@ -47,7 +49,8 @@ class Migration(migrations.Migration):
             name='MonthlyWeatherSeattle',
             fields=[
                 ('id', models.AutoField(auto_created=True,
-                                        primary_key=True, serialize=False, verbose_name='ID')),
+                                        primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('month', models.IntegerField()),
                 ('seattle_temp', models.DecimalField(
                     decimal_places=1, max_digits=5)),
@@ -57,7 +60,8 @@ class Migration(migrations.Migration):
             name='Author',
             fields=[
                 ('id', models.AutoField(auto_created=True,
-                                        primary_key=True, serialize=False, verbose_name='ID')),
+                                        primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('first_name', models.CharField(max_length=50)),
                 ('last_name', models.CharField(max_length=50)),
             ],
@@ -66,7 +70,8 @@ class Migration(migrations.Migration):
             name='Book',
             fields=[
                 ('id', models.AutoField(auto_created=True,
-                                        primary_key=True, serialize=False, verbose_name='ID')),
+                                        primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('title', models.CharField(max_length=50)),
                 ('rating', models.FloatField(db_column='rating')),
                 ('rating_count', models.IntegerField()),
@@ -77,7 +82,8 @@ class Migration(migrations.Migration):
             name='BookStore',
             fields=[
                 ('id', models.AutoField(auto_created=True,
-                                        primary_key=True, serialize=False, verbose_name='ID')),
+                                        primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('name', models.CharField(max_length=50)),
             ],
         ),
@@ -85,7 +91,8 @@ class Migration(migrations.Migration):
             name='City',
             fields=[
                 ('id', models.AutoField(auto_created=True,
-                                        primary_key=True, serialize=False, verbose_name='ID')),
+                                        primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('city', models.CharField(max_length=50)),
                 ('state', models.CharField(max_length=2)),
             ],
@@ -94,7 +101,8 @@ class Migration(migrations.Migration):
             name='Genre',
             fields=[
                 ('id', models.AutoField(auto_created=True,
-                                        primary_key=True, serialize=False, verbose_name='ID')),
+                                        primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('name', models.CharField(max_length=50)),
             ],
         ),
@@ -102,7 +110,8 @@ class Migration(migrations.Migration):
             name='Publisher',
             fields=[
                 ('id', models.AutoField(auto_created=True,
-                                        primary_key=True, serialize=False, verbose_name='ID')),
+                                        primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('name', models.CharField(max_length=50)),
             ],
         ),
@@ -110,38 +119,47 @@ class Migration(migrations.Migration):
             name='SalesHistory',
             fields=[
                 ('id', models.AutoField(auto_created=True,
-                                        primary_key=True, serialize=False, verbose_name='ID')),
+                                        primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('sale_date', models.DateField()),
                 ('sale_qty', models.IntegerField()),
                 ('price', models.DecimalField(decimal_places=2, max_digits=5)),
                 ('book', models.ForeignKey(
-                    on_delete=django.db.models.deletion.CASCADE, to='demoproject.Book')),
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='demoproject.Book')),
                 ('bookstore', models.ForeignKey(
-                    on_delete=django.db.models.deletion.CASCADE, to='demoproject.BookStore')),
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='demoproject.BookStore')),
             ],
         ),
         migrations.AddField(
             model_name='bookstore',
             name='city',
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to='demoproject.City'),
+                on_delete=django.db.models.deletion.CASCADE,
+                to='demoproject.City'),
         ),
         migrations.AddField(
             model_name='book',
             name='genre',
             field=models.ForeignKey(
-                blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='demoproject.Genre'),
+                blank=True, null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to='demoproject.Genre'),
         ),
         migrations.AddField(
             model_name='book',
             name='publisher',
             field=models.ForeignKey(
-                blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='demoproject.Publisher'),
+                blank=True, null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to='demoproject.Publisher'),
         ),
         migrations.AddField(
             model_name='book',
             name='related',
             field=models.ManyToManyField(
-                blank=True, db_column='related', related_name='_book_related_+', to='demoproject.Book'),
+                blank=True, db_column='related',
+                related_name='_book_related_+', to='demoproject.Book'),
         ),
     ]

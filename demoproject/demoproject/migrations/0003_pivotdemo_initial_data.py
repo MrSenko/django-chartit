@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import migrations, models
+from django.db import migrations
 
 
 def initial_data(apps, schema_editor):
@@ -18832,7 +18832,6 @@ def initial_data(apps, schema_editor):
     ]
 
     Book = apps.get_model("demoproject", "Book")
-    Author = apps.get_model("demoproject", "Author")
     BookRelated = None
     BookAuthors = None
     for relation in Book._meta.many_to_many:
