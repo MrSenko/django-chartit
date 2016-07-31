@@ -37,9 +37,6 @@ INSTALLED_APPS = [
     'chartit',
 
     'demoproject',
-#    'chartdemo',
-#    'pivotdemo',
-
 ]
 
 MIDDLEWARE_CLASSES = [
