@@ -1,5 +1,4 @@
 import sys
-import copy
 from collections import defaultdict, OrderedDict
 from itertools import groupby, chain, islice
 from operator import itemgetter

@@ -4,7 +4,11 @@ from functools import reduce
 def _getattr(obj, attr):
     """Recurses through an attribute chain to get the ultimate value."""
     try:
-        return reduce(getattr, attr.split('__'), obj)
+        value = reduce(getattr, attr.split('__'), obj)
+        # b/c we also support model properties
+        if callable(value):
+            value = value()
+        return value
     except AttributeError:
         # annotations return dictionaries where keys have double underscores
         return getattr(obj, attr)

@@ -38,6 +38,9 @@ Changelog
     * ``DataPool`` now supports ``RawQuerySet`` as data source. Fixes
       `#44 <https://github.com/chartit/django-chartit/issues/44>`_.
       ``RawQuerySet`` is **not** supported for ``PivotDataPool``!
+    * ``DataPool`` terms now supports model properties. Fixes
+      `#35 <https://github.com/chartit/django-chartit/issues/35>`_.
+      Model properties are **not** supported for ``PivotDataPool``!
     * README now tells how to execute ``demoproject/``
 
 * 0.2.7 (September 14, 2016)
