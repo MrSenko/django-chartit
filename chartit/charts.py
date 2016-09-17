@@ -146,7 +146,6 @@ class Chart(BaseChart):
           parsed.
         """
         super(Chart, self).__init__()
-        self.user_input = locals()
         if not isinstance(datasource, DataPool):
             raise APIInputError("%s must be an instance of DataPool."
                                 % datasource)
@@ -575,7 +574,6 @@ class PivotChart(BaseChart):
           parsed.
         """
         super(PivotChart, self).__init__()
-        self.user_input = locals()
         if not isinstance(datasource, PivotDataPool):
             raise APIInputError("%s must be an instance of PivotDataPool." %
                                 datasource)

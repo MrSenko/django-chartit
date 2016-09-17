@@ -88,9 +88,6 @@ class DataPool(object):
             'terms':[
               {'foo_2': 'foo'}]}]
          """
-        # Save user input to a separate dict. Can be used for debugging.
-        self.user_input = {}
-        self.user_input['series'] = copy.deepcopy(series)
         self.series = clean_dps(series)
         self.query_groups = self._group_terms_by_query()
         # Now get data
@@ -396,10 +393,6 @@ class PivotDataPool(DataPool):
             'terms': {
               'asia_avg_temp': Avg('temperature')}}]
         """
-        # Save user input to a separate dict. Can be used for debugging.
-        self.user_input = locals()
-        self.user_input['series'] = copy.deepcopy(series)
-
         self.series = clean_pdps(series)
         self.top_n_term = (top_n_term if top_n_term
                            in self.series.keys() else None)
