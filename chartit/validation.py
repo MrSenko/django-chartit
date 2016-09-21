@@ -237,7 +237,6 @@ def _convert_dps_to_dict(series_list):
         @series_list is a list of dicts. See DataPool.__init__
         for more information.
     """
-    series_list = copy.deepcopy(series_list)
     series_dict = {}
     for sd in series_list:
         for _key in ['options', 'terms']:
@@ -253,9 +252,15 @@ def _convert_dps_to_dict(series_list):
         if not isinstance(terms, list):
             raise APIInputError("Expecting a list in place of: %s" % terms)
 
+        if not terms:
+            raise APIInputError("'terms' cannot be empty.")
+
         for term in terms:
+            _new_name = ''
+            sd_term = {}
             if isinstance(term, six.string_types):
-                series_dict[term] = copy.deepcopy(options)
+                _new_name = term
+                sd_term = series_dict[_new_name] = copy.deepcopy(options)
             elif isinstance(term, dict):
                 _new_name = term['_new_name']
                 del term['_new_name']
@@ -263,10 +268,25 @@ def _convert_dps_to_dict(series_list):
                 # note: use 'fn' to specify a lambda func for this field
                 opts = copy.deepcopy(options)
                 opts.update(term)
-                series_dict[_new_name] = opts
+                sd_term = series_dict[_new_name] = opts
             else:
                 raise APIInputError("Expecting a basestring or dict "
                                     "in place of: %s" % str(term))
+
+            # make some more validations
+            if 'source' not in sd_term.keys():
+                raise APIInputError("%s is missing the 'source' key."
+                                    % sd_term)
+            sd_term['source'] = _clean_source(sd_term['source'])
+
+            sd_term.setdefault('field', _new_name)
+            fa = _validate_field_lookup_term(sd_term['source'].model,
+                                             sd_term['field'],
+                                             sd_term['source'].query)
+            # If the user supplied term is not a field name, use it as an alias
+            if _new_name != sd_term['field']:
+                fa = _new_name
+            sd_term.setdefault('field_alias', fa)
 
     return series_dict
 
@@ -277,26 +297,11 @@ def clean_dps(series):
     if not series:
         raise APIInputError("'series' cannot be empty.")
 
-    if isinstance(series, dict):
-        for tk, td in series.items():
-            try:
-                td['source'] = _clean_source(td['source'])
-            except KeyError:
-                raise APIInputError("%s is missing the 'source' key." % td)
-            td.setdefault('field', tk)
-            fa = _validate_field_lookup_term(td['source'].model, td['field'],
-                                             td['source'].query)
-            # If the user supplied term is not a field name, use it as an alias
-            if tk != td['field']:
-                fa = tk
-            td.setdefault('field_alias', fa)
-    elif isinstance(series, list):
-        series = _convert_dps_to_dict(series)
-        clean_dps(series)
-    else:
+    if not isinstance(series, list):
         raise APIInputError("Expecting a dict or list in place of: %s" %
                             series)
-    return series
+
+    return _convert_dps_to_dict(series)
 
 
 def _convert_pcso_to_dict(series_options):
