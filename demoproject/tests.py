@@ -1043,11 +1043,10 @@ class GoodDataSeriesListInputTests(TestCase):
             'terms': [
                 'price',
                 {
-                    'genre': {
-                        'field': 'book__genre__name',
-                        'source': SalesHistory.objects.filter(price__gte=10),
-                        'field_alias': 'gnr'
-                    }
+                    '_new_name': 'genre',
+                    'field': 'book__genre__name',
+                    'source': SalesHistory.objects.filter(price__gte=10),
+                    'field_alias': 'gnr',
                 }
             ]
         }]
@@ -1088,55 +1087,25 @@ class GoodDataSeriesListInputTests(TestCase):
         self.assertOptionDictsEqual(clean_dps(series_input),
                                     series_cleaned)
 
-    def test_terms_is_a_dict(self):
-        series_input = [{
-            'options': {
-                'source': SalesHistory.objects.all()
-            },
-            'terms': {'price': {}}
-        }]
-        series_cleaned = {
-            'price': {
-                'source': SalesHistory.objects.all(),
-                'field': 'price',
-                'field_alias': 'price'
-            }
-        }
-        self.assertOptionDictsEqual(clean_dps(series_input),
-                                    series_cleaned)
-
-    def test_terms_is_a_list_of_tuples_w_lambda(self):
+    def test_terms_is_a_list_of_dicts_w_lambda(self):
         _l = lambda x: -x # noqa
         series_input = [{
             'options': {
                 'source': SalesHistory.objects.all()
             },
-            'terms': [('price', _l)]
+            'terms': [
+                {
+                    '_new_name': 'price',
+                    'field': 'price',
+                    'fn': _l,
+                }
+            ]
         }]
         series_cleaned = {
             'price': {
                 'source': SalesHistory.objects.all(),
                 'field': 'price',
                 'field_alias': 'price',
-                'fn': _l
-            }
-        }
-        self.assertOptionDictsEqual(clean_dps(series_input),
-                                    series_cleaned)
-
-    def test_terms_is_a_list_of_tuples_containing_dict_and_lambda(self):
-        _l = lambda x: -x # noqa
-        series_input = [{
-            'options': {
-                'source': SalesHistory.objects.all()
-            },
-            'terms': [({'price-x': 'price'}, _l)]
-        }]
-        series_cleaned = {
-            'price-x': {
-                'source': SalesHistory.objects.all(),
-                'field': 'price',
-                'field_alias': 'price-x',
                 'fn': _l
             }
         }
@@ -1154,12 +1123,13 @@ class GoodDataSeriesListInputTests(TestCase):
                 'options': {
                     'source': SalesHistory.objects.filter(price__gte=10)
                 },
-                'terms': {
-                    'genre': {
+                'terms': [
+                    {
+                        '_new_name': 'genre',
                         'field': 'book__genre__name',
                         'field_alias': 'gnr'
                     }
-                }
+                ]
             }
         ]
         series_cleaned = {
@@ -1179,16 +1149,26 @@ class GoodDataSeriesListInputTests(TestCase):
 
 
 class BadDataSeriesListInputTests(TestCase):
+    def test_terms_is_not_dict(self):
+        series_input = [{
+            'options': {
+                'source': SalesHistory.objects.all()
+            },
+            'terms': {'price': {}}
+        }]
+        with self.assertRaises(APIInputError):
+            clean_dps(series_input)
+
     def test_source_missing(self):
         series_input = [{
             'options': {},
             'terms': [
-                'price', {
-                    'genre': {
-                        'field': 'book__genre__name',
-                        'source': SalesHistory.objects.filter(price__gte=10),
-                        'field_alias': 'gnr'
-                    }
+                'price',
+                {
+                    '_new_name': 'genre',
+                    'field': 'book__genre__name',
+                    'source': SalesHistory.objects.filter(price__gte=10),
+                    'field_alias': 'gnr'
                 }
             ]
         }]
@@ -1200,12 +1180,12 @@ class BadDataSeriesListInputTests(TestCase):
                 'source': 'foobar'
             },
             'terms': [
-                'price', {
-                    'genre': {
-                        'field': 'book__genre__name',
-                        'source': SalesHistory.objects.filter(price__gte=10),
-                        'field_alias': 'gnr'
-                    }
+                'price',
+                {
+                    '_new_name': 'genre',
+                    'field': 'book__genre__name',
+                    'source': SalesHistory.objects.filter(price__gte=10),
+                    'field_alias': 'gnr'
                 }
             ]
         }]
@@ -1244,12 +1224,12 @@ class BadDataSeriesListInputTests(TestCase):
                 'source': SalesHistory.objects.all()
             },
             'terms': [
-                'foobar', {
-                    'genre': {
-                        'field': 'book__genre__name',
-                        'source': SalesHistory.objects.filter(price__gte=10),
-                        'field_alias': 'gnr'
-                    }
+                'foobar',
+                {
+                    '_new_name': 'genre',
+                    'field': 'book__genre__name',
+                    'source': SalesHistory.objects.filter(price__gte=10),
+                    'field_alias': 'gnr'
                 }
             ]
         }]
@@ -1395,7 +1375,10 @@ class GoodChartOptionsTests(TestCase):
            {'options': {
               'source': MonthlyWeatherSeattle.objects.all()},
             'terms': [
-              {'month_seattle': 'month'},
+              {
+                '_new_name': 'month_seattle',
+                'field': 'month',
+              },
               'seattle_temp']
             }]
         self.ds = DataPool(series_input)
@@ -1539,7 +1522,10 @@ class BadChartOptionsTests(TestCase):
            {'options': {
               'source': MonthlyWeatherSeattle.objects.all()},
             'terms': [
-              {'month_seattle': 'month'},
+              {
+                '_new_name': 'month_seattle',
+                'field': 'month',
+              },
               'seattle_temp']
             }]
         self.ds = DataPool(series_input)

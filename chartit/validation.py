@@ -237,77 +237,54 @@ def clean_pdps(series):
 
 
 def _convert_dps_to_dict(series_list):
+    """
+        Converts a list of options/source/terms items into
+        a dictionary containing the same source for all terms.
+
+        @series_list is a list of dicts. See DataPool.__init__
+        for more information.
+    """
     series_list = copy.deepcopy(series_list)
     series_dict = {}
-    if not series_list:
-        raise APIInputError("'series' cannot be empty.")
     for sd in series_list:
-        try:
-            options = sd['options']
-        except KeyError:
-            raise APIInputError("%s is missing the 'options' key." % sd)
+        for _key in ['options', 'terms']:
+            if 'options' not in sd.keys():
+                raise APIInputError("%s is missing the '%s' key." % (sd, _key))
+
+        options = sd['options']
         if not isinstance(options, dict):
             raise APIInputError("Expecting a dict in place of: %s" % options)
 
-        try:
-            terms = sd['terms']
-        except KeyError:
-            raise APIInputError("%s is missing the 'terms' key." % sd)
-        if isinstance(terms, list):
-            for term in terms:
-                if isinstance(term, six.string_types):
-                    series_dict[term] = copy.deepcopy(options)
-                elif isinstance(term, dict):
-                    for tk, tv in term.items():
-                        if isinstance(tv, six.string_types):
-                            opts = copy.deepcopy(options)
-                            opts['field'] = tv
-                            series_dict[tk] = opts
-                        elif isinstance(tv, dict):
-                            opts = copy.deepcopy(options)
-                            opts.update(tv)
-                            series_dict[tk] = opts
-                        else:
-                            raise APIInputError("Expecting a basestring or "
-                                                "dict in place of: %s" % tv)
-                elif isinstance(term, tuple):
-                    t, fn = term
-                    if isinstance(t, dict):
-                        for tk, tv in t.items():
-                            opt = copy.deepcopy(options)
-                            opt['fn'] = fn
-                            opt['field'] = tv
-                            series_dict[tk] = opt
-                    else:
-                        opt = copy.deepcopy(options)
-                        opt['fn'] = fn
-                        series_dict[t] = opt
+        terms = sd['terms']
+        # see DataPool.__init__ for the format of terms
+        if not isinstance(terms, list):
+            raise APIInputError("Expecting a list in place of: %s" % terms)
 
-        elif isinstance(terms, dict):
-            for tk, tv in terms.items():
-                if isinstance(tv, six.string_types):
-                    opts = copy.deepcopy(options)
-                    opts['field'] = tv
-                    series_dict[tk] = opts
-                elif isinstance(tv, dict):
-                    opts = copy.deepcopy(options)
-                    opts.update(tv)
-                    series_dict[tk] = opts
-                else:
-                    raise APIInputError("Expecting a basestring or dict in "
-                                        "place of: %s" % tv)
-        else:
-            raise APIInputError("Expecting a list or dict in place of: %s."
-                                % terms)
+        for term in terms:
+            if isinstance(term, six.string_types):
+                series_dict[term] = copy.deepcopy(options)
+            elif isinstance(term, dict):
+                _new_name = term['_new_name']
+                del term['_new_name']
+
+                # note: use 'fn' to specify a lambda func for this field
+                opts = copy.deepcopy(options)
+                opts.update(term)
+                series_dict[_new_name] = opts
+            else:
+                raise APIInputError("Expecting a basestring or dict "
+                                    "in place of: %s" % str(term))
+
     return series_dict
 
 
 def clean_dps(series):
     """Clean the DataPool series input from the user.
     """
+    if not series:
+        raise APIInputError("'series' cannot be empty.")
+
     if isinstance(series, dict):
-        if not series:
-            raise APIInputError("'series' cannot be empty.")
         for tk, td in series.items():
             try:
                 td['source'] = _clean_source(td['source'])

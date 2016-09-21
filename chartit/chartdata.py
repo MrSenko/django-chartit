@@ -25,8 +25,7 @@ class DataPool(object):
                'source': a django model, Manager or QuerySet,
                },
              'terms': [
-               'a_valid_field_name', ... ,
-               {'any_name': 'a_valid_field_name', ... },
+               'a_valid_field_name', { or a dict },
                ]
             },
             ...
@@ -42,8 +41,15 @@ class DataPool(object):
 
             1. a ``str`` - needs to be a valid model field for the
                corresponding ``source``, or
-            2. a ``dict`` - need to be of the form
-               ``{'any_name': 'a_valid_field_name', ...}``.
+            2. a ``dict`` - needs to be of the form
+                {
+                    '_new_name': 'any_name',
+                    'field': 'a_valid_field_name',
+                    'source': QuerySet,
+                    'field_alias': 'a display name for this field',
+                    'fn': lambda or None,
+                }
+                Only '_new_name' and 'field' are mandatory!
 
           To retrieve data from multiple models or QuerySets, just add more
           dictionaries with the corresponding ``options`` and terms.
@@ -85,7 +91,7 @@ class DataPool(object):
            {'options': {
              'source': OtherModel},
             'terms':[
-              {'foo_2': 'foo'}]}]
+              ('foo_2', 'foo', None)]}]
          """
         self.series = clean_dps(series)
         self.query_groups = self._group_terms_by_query()

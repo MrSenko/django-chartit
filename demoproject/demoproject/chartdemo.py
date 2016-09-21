@@ -228,8 +228,14 @@ def multi_table_same_x(_, title, code, doc, sidebar_items):
 
     Points to note:
 
-    - The `month` in ``terms`` for seattle data is written as
-      ``{'month_seattle': 'month'}`` instead of as just ``'month'`` because
+    - The `month` in ``terms`` for seattle data is written as ::
+
+          {
+            '_new_name': 'month_seattle',
+            'field': 'month',
+          }
+
+      instead of as just ``'month'`` because
       in the latter case it would overwrite the ``'month'`` term from the
       other model.
     - Notice that the Seattle weather data in the database does not have any
@@ -251,7 +257,10 @@ def multi_table_same_x(_, title, code, doc, sidebar_items):
                     'source': MonthlyWeatherSeattle.objects.all()
                 },
                 'terms': [
-                    {'month_seattle': 'month'},
+                    {
+                        '_new_name': 'month_seattle',
+                        'field': 'month',
+                    },
                     'seattle_temp'
                 ]}
              ]
@@ -396,7 +405,10 @@ def chart_default_options(_, title, code, doc, sidebar_items):
                     'source': MonthlyWeatherSeattle.objects.all()
                 },
                 'terms': [
-                    {'month_seattle': 'month'},
+                    {
+                        '_new_name': 'month_seattle',
+                        'field': 'month',
+                    },
                     'seattle_temp'
                 ]}
             ]
@@ -521,7 +533,10 @@ def combination_plot(_, title, code, doc, sidebar_items):
                     'source': MonthlyWeatherByCity.objects.all()
                 },
                 'terms': [
-                    {'month_boston': 'month'},
+                    {
+                        '_new_name': 'month_boston',
+                        'field': 'month',
+                    },
                     'boston_temp'
                 ]}
             ]

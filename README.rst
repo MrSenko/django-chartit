@@ -28,8 +28,26 @@ pivoted by specific column(s).
 Changelog
 =========
 
-* master
+* master - **BACKWARD INCOMPATIBLE CHANGES**
+
     * README now tells how to execute ``demoproject/``
+    * ``DataPool`` series 'terms' now **ONLY** accepts list values. This
+      also revealed a missing lambda support when 'terms' type was a dict!
+    * Syntax of individual term for ``DataPool`` series 'terms' has been
+      updated. The **ONLY** accepted values now are
+      - string - a valid field name or
+      - a dict of the form ::
+
+        {
+            '_new_name': 'any_name',
+            'field': 'a_valid_field_name',
+            'source': QuerySet,
+            'field_alias': 'a display name for this field',
+            'fn': lambda or None,
+        }
+
+      Only '_new_name' and 'field' are mandatory!
+      Previous syntax is no longer supported!
 
 * 0.2.7 (September 14, 2016)
     * Don't use ``super(self.__class__)`` b/c that breaks chart class
