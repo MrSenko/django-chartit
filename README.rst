@@ -48,6 +48,8 @@ Changelog
 
       Only '_new_name' and 'field' are mandatory!
       Previous syntax is no longer supported!
+    * ``DataPool`` and ``PivotDataPool`` now accept **ONLY** a QuerySet for the
+      'source' parameter!
 
 * 0.2.7 (September 14, 2016)
     * Don't use ``super(self.__class__)`` b/c that breaks chart class

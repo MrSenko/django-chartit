@@ -525,90 +525,6 @@ class GoodPivotSeriesListInputTests(TestCase):
         self.assertOptionDictsEqual(clean_pdps(series_input),
                                     series_cleaned)
 
-    def test_source_a_manager(self):
-        series_input = [{
-            'options': {
-                'source': SalesHistory.objects,
-                'categories': 'bookstore__city__state',
-                'legend_by': 'book__genre__name',
-                'top_n_per_cat': 2
-            },
-            'terms': {
-                'avg_price': Avg('price'),
-                'avg_price_all': {
-                    'func': Avg('price'),
-                    'legend_by': None
-                }
-            }
-        }]
-        series_cleaned = {
-            'avg_price': {
-                'source': SalesHistory.objects.all(),
-                'func': Avg('price'),
-                'categories': ['bookstore__city__state'],
-                'legend_by': ['book__genre__name'],
-                'top_n_per_cat': 2,
-                'field_aliases': {
-                    'bookstore__city__state': 'state',
-                    'book__genre__name': 'name'
-                }
-            },
-            'avg_price_all': {
-                'func': Avg('price'),
-                'source': SalesHistory.objects.all(),
-                'categories': ['bookstore__city__state'],
-                'legend_by': (),
-                'top_n_per_cat': 2,
-                'field_aliases': {
-                    'bookstore__city__state': 'state'
-                }
-            }
-        }
-        self.assertOptionDictsEqual(clean_pdps(series_input),
-                                    series_cleaned)
-
-    def test_source_a_model(self):
-        series_input = [{
-            'options': {
-                'source': SalesHistory,
-                'categories': 'bookstore__city__state',
-                'legend_by': 'book__genre__name',
-                'top_n_per_cat': 2
-            },
-            'terms': {
-                'avg_price': Avg('price'),
-                'avg_price_all': {
-                    'func': Avg('price'),
-                    'legend_by': None
-                }
-            }
-        }]
-        series_cleaned = {
-            'avg_price': {
-                'source': SalesHistory.objects.all(),
-                'func': Avg('price'),
-                'categories': ['bookstore__city__state'],
-                'legend_by': ['book__genre__name'],
-                'top_n_per_cat': 2,
-                'field_aliases': {
-                    'bookstore__city__state': 'state',
-                    'book__genre__name': 'name'
-                }
-            },
-            'avg_price_all': {
-                'func': Avg('price'),
-                'source': SalesHistory.objects.all(),
-                'categories': ['bookstore__city__state'],
-                'legend_by': (),
-                'top_n_per_cat': 2,
-                'field_aliases': {
-                    'bookstore__city__state': 'state'
-                }
-            }
-        }
-        self.assertOptionDictsEqual(clean_pdps(series_input),
-                                    series_cleaned)
-
     def test_term_opts_an_aggr(self):
         series_input = [{
             'options': {
@@ -804,6 +720,44 @@ class GoodPivotSeriesListInputTests(TestCase):
 
 
 class BadPivotSeriesListInputTests(TestCase):
+
+    def test_source_a_manager(self):
+        series_input = [{
+            'options': {
+                'source': SalesHistory.objects,
+                'categories': 'bookstore__city__state',
+                'legend_by': 'book__genre__name',
+                'top_n_per_cat': 2
+            },
+            'terms': {
+                'avg_price': Avg('price'),
+                'avg_price_all': {
+                    'func': Avg('price'),
+                    'legend_by': None
+                }
+            }
+        }]
+        with self.assertRaises(APIInputError):
+            clean_pdps(series_input)
+
+    def test_source_a_model(self):
+        series_input = [{
+            'options': {
+                'source': SalesHistory,
+                'categories': 'bookstore__city__state',
+                'legend_by': 'book__genre__name',
+                'top_n_per_cat': 2
+            },
+            'terms': {
+                'avg_price': Avg('price'),
+                'avg_price_all': {
+                    'func': Avg('price'),
+                    'legend_by': None
+                }
+            }
+        }]
+        with self.assertRaises(APIInputError):
+            clean_pdps(series_input)
 
     def test_terms_empty(self):
         series_input = [{

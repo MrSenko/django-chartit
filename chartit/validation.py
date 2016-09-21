@@ -1,8 +1,6 @@
 import copy
 
 from django.db.models.aggregates import Aggregate
-from django.db.models.base import ModelBase
-from django.db.models.manager import Manager
 from django.db.models.query import QuerySet
 from django.utils import six
 
@@ -78,15 +76,10 @@ def _validate_field_lookup_term(model, term, query):
 
 
 def _clean_source(source):
-    if isinstance(source, ModelBase):
-        return source._base_manager.all()
-    elif isinstance(source, Manager):
-        return source.all()
-    elif isinstance(source, QuerySet):
+    if isinstance(source, QuerySet):
         return source
-    raise APIInputError("'source' must either be a QuerySet, Model or "
-                        "Manager. Got %s of type %s instead."
-                        % (source, type(source)))
+    raise APIInputError("'source' must be a QuerySet. Got "
+                        "%s of type %s instead." % (source, type(source)))
 
 
 def _validate_func(func):
