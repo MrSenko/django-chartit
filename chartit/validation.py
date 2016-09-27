@@ -116,18 +116,13 @@ def _clean_categories(categories, source):
     return categories, field_aliases
 
 
-def _clean_legend_by(legend_by, source):
-    if isinstance(legend_by, six.string_types):
-        legend_by = [legend_by]
-    elif isinstance(legend_by, (tuple, list)):
-        pass
-    elif legend_by is None:
-        legend_by = ()
-    else:
-        raise APIInputError("'legend_by' must be one of the following "
-                            "types: basestring, tuple or list. Got %s of "
-                            "type %s instead."
-                            % (legend_by, type(legend_by)))
+def _validate_legend_by(legend_by, source):
+    if not legend_by:
+        legend_by = []
+
+    if not isinstance(legend_by, list):
+        raise APIInputError("'legend_by' must be a list")
+
     field_aliases = {}
     for lg in legend_by:
         field_aliases[lg] = _validate_field_lookup_term(source.model, lg,
@@ -198,7 +193,7 @@ def _convert_pdps_to_dict(series_list):
             opts['categories'], fa_cat = _clean_categories(opts['categories'],
                                                            opts['source'])
             if 'legend_by' in opts.keys():
-                opts['legend_by'], fa_lgby = _clean_legend_by(
+                opts['legend_by'], fa_lgby = _validate_legend_by(
                                                 opts['legend_by'],
                                                 opts['source'])
             else:

@@ -52,6 +52,7 @@ Changelog
       'source' parameter!
     * ``PivotDataPool`` now **ONLY** accepts a list for the 'series'
       parameter!
+    * ``PivotDataPool`` parameter 'legend_by' now **ONLY** accepts a list!
     * ``clean_sortf_mapf_mts`` will now raise an exception if the argument is not
       a tuple. Previously this could result in 'undefined variable' error. The
      'sortf_mapf_mts' parameter is used in ``PivotDataPool``.

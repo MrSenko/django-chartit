@@ -52,7 +52,7 @@ def pivot_with_legend(_, title, code, doc, sidebar_items):
            {'options': {
               'source': SalesHistory.objects.all(),
               'categories': 'bookstore__city__city',
-              'legend_by': 'book__genre__name'},
+              'legend_by': ['book__genre__name']},
             'terms': {
               'tot_sales': Sum('sale_qty')}}])
 
@@ -96,7 +96,7 @@ def pivot_multi_category(_, title, code, doc, sidebar_items):
               'categories': [
                 'bookstore__city__state',
                 'bookstore__city__city'],
-              'legend_by': 'book__genre__name'},
+              'legend_by': ['book__genre__name']},
             'terms': {
               'tot_sales': Sum('sale_qty')}}])
 
@@ -137,7 +137,7 @@ def pivot_with_top_n_per_cat(_, title, code, doc, sidebar_items):
               'categories': [
                 'bookstore__city__state',
                 'bookstore__city__city'],
-              'legend_by': 'book__genre__name',
+              'legend_by': ['book__genre__name'],
               'top_n_per_cat': 2},
             'terms': {
               'tot_sales': Sum('sale_qty')}}])
@@ -184,7 +184,7 @@ def pivot_top_n(_, title, code, doc, sidebar_items):
               'categories': [
                 'bookstore__city__state',
                 'bookstore__city__city'],
-              'legend_by': 'book__genre__name'},
+              'legend_by': ['book__genre__name']},
             'terms': {
               'tot_sales': Sum('sale_qty')}}],
           top_n=5,
@@ -224,7 +224,7 @@ def pivot_pareto(_, title, code, doc, sidebar_items):
               'categories': [
                 'bookstore__city__state',
                 'bookstore__city__city'],
-              'legend_by': 'book__genre__name'},
+              'legend_by': ['book__genre__name']},
             'terms': {
               'tot_sales': Sum('sale_qty')}}],
           top_n=5,
@@ -269,7 +269,7 @@ def pivot_multi_axes(_, title, code, doc, sidebar_items):
               'categories': [
                 'bookstore__city__state',
                 'bookstore__city__city'],
-              'legend_by': 'book__genre__name'},
+              'legend_by': ['book__genre__name']},
             'terms': {
               'tot_sales':Sum('sale_qty')}},
 
@@ -292,7 +292,7 @@ def pivot_multi_axes(_, title, code, doc, sidebar_items):
               'categories': [
                 'bookstore__city__state',
                 'bookstore__city__city'],
-              'legend_by': 'book__genre__name'},
+              'legend_by': ['book__genre__name']},
             'terms': {
               'tot_sales': Sum('sale_qty'),
               'avg_price': {
@@ -353,7 +353,7 @@ def pivot_mapf(_, title, code, doc, sidebar_items):
               'categories': [
                 'bookstore__city__state',
                 'bookstore__city__city'],
-              'legend_by': 'book__genre__name'},
+              'legend_by': ['book__genre__name']},
             'terms': {
               'tot_sales': Sum('sale_qty')}}],
           sortf_mapf_mts=(None, region_state, True))
@@ -438,7 +438,7 @@ def pivot_datetime_related(_, title, code, doc, sidebar_items):
                                 book__published_at__month=6,
                               ),
                     'categories': 'book__published_at',
-                    'legend_by': 'book__title',
+                    'legend_by': ['book__title'],
                 },
                 'terms': {
                     'tot_sales': Sum('sale_qty'),

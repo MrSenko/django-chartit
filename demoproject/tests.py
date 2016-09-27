@@ -211,7 +211,7 @@ class GoodPivotSeriesListInputTests(TestCase):
             'options': {
                 'source': SalesHistory.objects.all(),
                 'categories': 'bookstore__city__state',
-                'legend_by': 'book__genre__name',
+                'legend_by': ['book__genre__name'],
                 'top_n_per_cat': 2
             },
             'terms': {
@@ -238,7 +238,7 @@ class GoodPivotSeriesListInputTests(TestCase):
                 'func': Avg('price'),
                 'source': SalesHistory.objects.all(),
                 'categories': ['bookstore__city__state'],
-                'legend_by': (),
+                'legend_by': [],
                 'top_n_per_cat': 2,
                 'field_aliases': {
                     'bookstore__city__state': 'state'
@@ -281,7 +281,7 @@ class GoodPivotSeriesListInputTests(TestCase):
             'options': {
                 'source': SalesHistory.objects.all(),
                 'categories': 'bookstore__city__state',
-                'legend_by': 'book__genre__name',
+                'legend_by': ['book__genre__name'],
                 'top_n_per_cat': 2
             },
             'terms': {
@@ -366,7 +366,7 @@ class GoodPivotSeriesListInputTests(TestCase):
             'options': {
                 'source': SalesHistory.objects.all(),
                 'categories': ['bookstore__city__state'],
-                'legend_by': 'book__genre__name',
+                'legend_by': ['book__genre__name'],
                 'top_n_per_cat': 2
             },
             'terms': {
@@ -395,7 +395,7 @@ class GoodPivotSeriesListInputTests(TestCase):
                 'options': {
                     'source': SalesHistory.objects.all(),
                     'categories': 'bookstore__city__state',
-                    'legend_by': 'book__genre__name',
+                    'legend_by': ['book__genre__name'],
                     'top_n_per_cat': 2
                 },
                 'terms': {
@@ -431,7 +431,7 @@ class GoodPivotSeriesListInputTests(TestCase):
                 'func': Avg('price'),
                 'source': SalesHistory.objects.filter(price__gte=10),
                 'categories': ['bookstore__city__city'],
-                'legend_by': (),
+                'legend_by': [],
                 'top_n_per_cat': 2,
                 'field_aliases': {
                     'bookstore__city__city': 'city'
@@ -920,7 +920,7 @@ class GoodPivotChartOptionsTests(TestCase):
             'options': {
                 'source': SalesHistory.objects.all(),
                 'categories': 'bookstore__city__state',
-                'legend_by': 'book__genre__name',
+                'legend_by': ['book__genre__name'],
                 'top_n_per_cat': 2
             },
             'terms': {
@@ -966,7 +966,7 @@ class BadPivotChartOptionsTests(TestCase):
             'options': {
                 'source': SalesHistory.objects.all(),
                 'categories': 'bookstore__city__state',
-                'legend_by': 'book__genre__name',
+                'legend_by': ['book__genre__name'],
                 'top_n_per_cat': 2
             },
             'terms': {
@@ -1428,7 +1428,7 @@ class ChartitTemplateTagTests(TestCase):
                         'bookstore__city__state',
                         'bookstore__city__city'
                     ],
-                    'legend_by': 'book__genre__name'
+                    'legend_by': ['book__genre__name']
                 },
                 'terms': {
                     'tot_sales': Sum('sale_qty')
@@ -1471,7 +1471,7 @@ class ChartitTemplateTagTests(TestCase):
                         'bookstore__city__state',
                         'bookstore__city__city'
                     ],
-                    'legend_by': 'book__genre__name'
+                    'legend_by': ['book__genre__name']
                 },
                 'terms': {
                     'tot_sales': Sum('sale_qty')
