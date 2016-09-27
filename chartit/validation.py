@@ -298,8 +298,7 @@ def clean_dps(series):
         raise APIInputError("'series' cannot be empty.")
 
     if not isinstance(series, list):
-        raise APIInputError("Expecting a dict or list in place of: %s" %
-                            series)
+        raise APIInputError("Expecting a list in place of: %s" % series)
 
     return _convert_dps_to_dict(series)
 
