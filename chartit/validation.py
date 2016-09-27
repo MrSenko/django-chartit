@@ -442,39 +442,51 @@ def clean_cso(series_options, ds):
 
 
 def clean_sortf_mapf_mts(sortf_mapf_mts):
-    if sortf_mapf_mts is None:
-        sortf_mapf_mts = (None, None, False)
-    if isinstance(sortf_mapf_mts, tuple):
-        if len(sortf_mapf_mts) != 3:
-            raise APIInputError("%r must have exactly three elements."
-                                % sortf_mapf_mts)
-        sortf, mapf, mts = sortf_mapf_mts
-        if not callable(sortf) and sortf is not None:
-            raise APIInputError("%r must be callable or None." % sortf)
-        if not callable(mapf) and mapf is not None:
-            raise APIInputError("%r must be callable or None." % mapf)
-        mts = bool(mts)
+    """
+    **sortf_mapf_mts** is a ``tuple`` with three elements of the form
+    ``(sort_func, map_func, map_then_sort_bool)``. It is used in PivotDataPool
+    and as helper method for ``clean_x_sortf_mapf_mts()``.
+    """
+
+    if not sortf_mapf_mts:
+        return (None, None, False)
+
+    if not isinstance(sortf_mapf_mts, tuple):
+        raise APIInputError("sortf_mapf_mts must be a tuple!")
+
+    if len(sortf_mapf_mts) != 3:
+        raise APIInputError("%r must have exactly three elements."
+                            % sortf_mapf_mts)
+
+    sortf, mapf, mts = sortf_mapf_mts
+    if sortf and not callable(sortf):
+        raise APIInputError("sortf must be callable or None.")
+
+    if mapf and not callable(mapf):
+        raise APIInputError("mapf must be callable or None.")
+
+    mts = bool(mts)
+
     return (sortf, mapf, mts)
 
 
 def clean_x_sortf_mapf_mts(x_sortf_mapf_mts):
+    """
+        Similar to ``clean_sortf_mapf_mts`` but input parameter
+        can be either a tuple of a list of tuples and the return value is a
+        list of tuples.
+    """
+    if not x_sortf_mapf_mts:
+        return [(None, None, False)]
+
     cleaned_x_s_m_mts = []
-    if x_sortf_mapf_mts is None:
-        x_sortf_mapf_mts = [(None, None, False)]
+
     if isinstance(x_sortf_mapf_mts, tuple):
         x_sortf_mapf_mts = [x_sortf_mapf_mts]
+    elif not isinstance(x_sortf_mapf_mts, list):
+        raise APIInputError("x_sortf_mapf_mts must be a list of tuples!")
+
     for x_s_m_mts in x_sortf_mapf_mts:
-        if not isinstance(x_s_m_mts, tuple):
-            raise APIInputError("%r must be a tuple." % x_s_m_mts)
-        if len(x_s_m_mts) != 3:
-            raise APIInputError("%r must have exactly three elements."
-                                % x_s_m_mts)
-        x_sortf = x_s_m_mts[0]
-        if not callable(x_sortf) and x_sortf is not None:
-            raise APIInputError("%r must be callable or None." % x_sortf)
-        x_mapf = x_s_m_mts[1]
-        if not callable(x_mapf) and x_mapf is not None:
-            raise APIInputError("%r must be callable or None." % x_mapf)
-        x_mts = bool(x_s_m_mts[2])
-        cleaned_x_s_m_mts.append((x_sortf, x_mapf, x_mts))
+        cleaned_x_s_m_mts.append(clean_sortf_mapf_mts(x_s_m_mts))
+
     return cleaned_x_s_m_mts
