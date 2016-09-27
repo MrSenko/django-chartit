@@ -75,7 +75,11 @@ def _validate_field_lookup_term(model, term, query):
         return _validate_field_lookup_term(m, '__'.join(terms[1:]), query)
 
 
-def _clean_source(source):
+def _validate_source(source):
+    """
+        Used to validate the source parameter passed to
+        DataPool and PivotDataPool. It must be a QuerySet!
+    """
     if isinstance(source, QuerySet):
         return source
     raise APIInputError("'source' must be a QuerySet. Got "
@@ -83,6 +87,10 @@ def _clean_source(source):
 
 
 def _validate_func(func):
+    """
+        Used to validate aggregate functions for PivotDataPool
+        terms.
+    """
     if not isinstance(func, Aggregate):
         raise APIInputError("'func' must an instance of django Aggregate. "
                             "Got %s of type %s instead" % (func, type(func)))
@@ -128,13 +136,20 @@ def _clean_legend_by(legend_by, source):
 
 
 def _validate_top_n_per_cat(top_n_per_cat):
+    """
+        Validates parameter used in PivotDataPool.
+    """
     if not isinstance(top_n_per_cat,  int):
         raise APIInputError("'top_n_per_cat' must be an int. Got %s of type "
                             "%s instead."
                             % (top_n_per_cat, type(top_n_per_cat)))
 
 
-def _clean_field_aliases(fa_actual, fa_cat, fa_lgby):
+def _merge_field_aliases(fa_actual, fa_cat, fa_lgby):
+    """
+        Merges dicts containing field aliases data.
+        Used in PivotDataPool validation
+    """
     fa = copy.copy(fa_lgby)
     fa.update(fa_cat)
     fa.update(fa_actual)
@@ -178,7 +193,7 @@ def _convert_pdps_to_dict(series_list):
                     raise APIInputError("%s is missing the '%s' key."
                                         % (opts, _key))
 
-            opts['source'] = _clean_source(opts['source'])
+            opts['source'] = _validate_source(opts['source'])
             _validate_func(opts['func'])
             opts['categories'], fa_cat = _clean_categories(opts['categories'],
                                                            opts['source'])
@@ -198,7 +213,7 @@ def _convert_pdps_to_dict(series_list):
                 fa_actual = opts['field_aliases']
             else:
                 opts['field_aliases'] = fa_actual = {}
-            opts['field_aliases'] = _clean_field_aliases(fa_actual, fa_cat,
+            opts['field_aliases'] = _merge_field_aliases(fa_actual, fa_cat,
                                                          fa_lgby)
 
             series_dict.update({tk: opts})
@@ -266,7 +281,7 @@ def _convert_dps_to_dict(series_list):
             if 'source' not in sd_term.keys():
                 raise APIInputError("%s is missing the 'source' key."
                                     % sd_term)
-            sd_term['source'] = _clean_source(sd_term['source'])
+            sd_term['source'] = _validate_source(sd_term['source'])
 
             sd_term.setdefault('field', _new_name)
             fa = _validate_field_lookup_term(sd_term['source'].model,
