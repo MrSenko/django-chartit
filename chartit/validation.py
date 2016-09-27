@@ -144,89 +144,78 @@ def _clean_field_aliases(fa_actual, fa_cat, fa_lgby):
 def _convert_pdps_to_dict(series_list):
     series_dict = {}
     for sd in series_list:
-        try:
-            options = sd['options']
-        except KeyError:
-            raise APIInputError("%s is missing the 'options' key." % sd)
+        for _key in ['options', 'terms']:
+            if _key not in sd.keys():
+                raise APIInputError("%s is missing the '%s' key." % (sd, _key))
+
+        options = sd['options']
         if not isinstance(options, dict):
             raise APIInputError("Expecting a dict in place of: %s" % options)
 
-        try:
-            terms = sd['terms']
-        except KeyError:
-            raise APIInputError("%s is missing have the 'terms' key." % sd)
-        if isinstance(terms, dict):
-            if not terms:
-                raise APIInputError("'terms' cannot be empty.")
-            for tk, tv in terms.items():
-                if isinstance(tv, Aggregate):
-                    tv = {'func': tv}
-                elif isinstance(tv, dict):
-                    pass
-                else:
-                    raise APIInputError("Expecting a dict or django Aggregate "
-                                        "in place of: %s" % tv)
-                opts = copy.deepcopy(options)
-                opts.update(tv)
-                series_dict.update({tk: opts})
-        else:
-            raise APIInputError("Expecting a dict in place of: %s"
-                                % terms)
+        terms = sd['terms']
+        # see PivotDataPool.__init__ for the format of terms
+        if not isinstance(terms, dict):
+            raise APIInputError("Expecting a dict in place of: %s" % terms)
+
+        if not terms:
+            raise APIInputError("'terms' cannot be empty.")
+
+        for tk, tv in terms.items():
+            if isinstance(tv, Aggregate):
+                tv = {'func': tv}
+            elif isinstance(tv, dict):
+                pass
+            else:
+                raise APIInputError("Expecting a dict or django Aggregate "
+                                    "in place of: %s" % tv)
+
+            opts = copy.deepcopy(options)
+            opts.update(tv)
+
+            # make some more validations
+            for _key in ['source', 'func', 'categories']:
+                if _key not in opts.keys():
+                    raise APIInputError("%s is missing the '%s' key."
+                                        % (opts, _key))
+
+            opts['source'] = _clean_source(opts['source'])
+            _validate_func(opts['func'])
+            opts['categories'], fa_cat = _clean_categories(opts['categories'],
+                                                           opts['source'])
+            if 'legend_by' in opts.keys():
+                opts['legend_by'], fa_lgby = _clean_legend_by(
+                                                opts['legend_by'],
+                                                opts['source'])
+            else:
+                opts['legend_by'], fa_lgby = (), {}
+
+            if 'top_n_per_cat' in opts.keys():
+                _validate_top_n_per_cat(opts['top_n_per_cat'])
+            else:
+                opts['top_n_per_cat'] = 0
+
+            if 'field_aliases' in opts.keys():
+                fa_actual = opts['field_aliases']
+            else:
+                opts['field_aliases'] = fa_actual = {}
+            opts['field_aliases'] = _clean_field_aliases(fa_actual, fa_cat,
+                                                         fa_lgby)
+
+            series_dict.update({tk: opts})
+
     return series_dict
 
 
 def clean_pdps(series):
     """Clean the PivotDataPool series input from the user.
     """
-    if isinstance(series, list):
-        series = _convert_pdps_to_dict(series)
-        clean_pdps(series)
-    elif isinstance(series, dict):
-        if not series:
-            raise APIInputError("'series' cannot be empty.")
-        for td in series.values():
-            # td is not a dict
-            if not isinstance(td, dict):
-                raise APIInputError("Expecting a dict in place of: %s" % td)
-            # source
-            try:
-                td['source'] = _clean_source(td['source'])
-            except KeyError:
-                raise APIInputError("Missing 'source': %s" % td)
-            # func
-            try:
-                _validate_func(td['func'])
-            except KeyError:
-                raise APIInputError("Missing 'func': %s" % td)
-            # categories
-            try:
-                td['categories'], fa_cat = _clean_categories(td['categories'],
-                                                             td['source'])
-            except KeyError:
-                raise APIInputError("Missing 'categories': %s" % td)
-            # legend_by
-            try:
-                td['legend_by'], fa_lgby = _clean_legend_by(td['legend_by'],
-                                                            td['source'])
-            except KeyError:
-                td['legend_by'], fa_lgby = (), {}
-            # top_n_per_cat
-            try:
-                _validate_top_n_per_cat(td['top_n_per_cat'])
-            except KeyError:
-                td['top_n_per_cat'] = 0
-            # field_aliases
-            try:
-                fa_actual = td['field_aliases']
-            except KeyError:
-                td['field_aliases'] = fa_actual = {}
-            td['field_aliases'] = _clean_field_aliases(fa_actual,
-                                                       fa_cat,
-                                                       fa_lgby)
-    else:
-        raise APIInputError("Expecting a dict or list in place of: %s" %
-                            series)
-    return series
+    if not series:
+        raise APIInputError("'series' cannot be empty.")
+
+    if not isinstance(series, list):
+        raise APIInputError("Expecting a list in place of: %s" % series)
+
+    return _convert_pdps_to_dict(series)
 
 
 def _convert_dps_to_dict(series_list):
@@ -240,7 +229,7 @@ def _convert_dps_to_dict(series_list):
     series_dict = {}
     for sd in series_list:
         for _key in ['options', 'terms']:
-            if 'options' not in sd.keys():
+            if _key not in sd.keys():
                 raise APIInputError("%s is missing the '%s' key." % (sd, _key))
 
         options = sd['options']

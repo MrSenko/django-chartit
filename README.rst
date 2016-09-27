@@ -50,6 +50,8 @@ Changelog
       Previous syntax is no longer supported!
     * ``DataPool`` and ``PivotDataPool`` now accept **ONLY** a QuerySet for the
       'source' parameter!
+    * ``PivotDataPool`` now **ONLY** accepts a list for the 'series'
+      parameter!
     * ``clean_sortf_mapf_mts`` will now raise an exception if the argument is not
       a tuple. Previously this could result in 'undefined variable' error. The
      'sortf_mapf_mts' parameter is used in ``PivotDataPool``.
