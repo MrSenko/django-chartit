@@ -774,7 +774,7 @@ class GoodDataSeriesListInputTests(TestCase):
                 {
                     '_new_name': 'price',
                     'field': 'price',
-                    'fn': _l,
+                    'func': _l,
                 }
             ]
         }]
@@ -783,7 +783,7 @@ class GoodDataSeriesListInputTests(TestCase):
                 'source': SalesHistory.objects.all(),
                 'field': 'price',
                 'field_alias': 'price',
-                'fn': _l
+                'func': _l
             }
         }
         self.assertOptionDictsEqual(clean_dps(series_input),

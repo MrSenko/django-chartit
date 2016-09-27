@@ -254,7 +254,7 @@ def _convert_dps_to_dict(series_list):
                 _new_name = term['_new_name']
                 del term['_new_name']
 
-                # note: use 'fn' to specify a lambda func for this field
+                # note: use 'func' to specify a lambda func for this field
                 opts = copy.deepcopy(options)
                 opts.update(term)
                 sd_term = series_dict[_new_name] = opts

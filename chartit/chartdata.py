@@ -47,7 +47,7 @@ class DataPool(object):
                     'field': 'a_valid_field_name',
                     'source': QuerySet,
                     'field_alias': 'a display name for this field',
-                    'fn': lambda or None,
+                    'func': lambda or None,
                 }
                 Only '_new_name' and 'field' are mandatory!
 
@@ -138,7 +138,7 @@ class DataPool(object):
             vqs2 = []
             for v in vqs:
                 for (_, td) in tk_td_tuples:
-                    f = td.get('fn')
+                    f = td.get('func')
                     if f:
                         v[td['field']] = f(v[td['field']])
                 vqs2.append(v)

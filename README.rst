@@ -43,7 +43,7 @@ Changelog
             'field': 'a_valid_field_name',
             'source': QuerySet,
             'field_alias': 'a display name for this field',
-            'fn': lambda or None,
+            'func': lambda or None,
         }
 
       Only '_new_name' and 'field' are mandatory!
