@@ -193,9 +193,7 @@ class PivotDataPool(DataPool):
             + **source** (**required**) - is either a ``Model``, ``Manager``
               or a ``QuerySet``.
             + **categories** (**required**) - is a list of model fields by
-              which the data needs to be pivoted by. If there is only a single
-              item, ``categories`` can just be a string instead of a list with
-              single element.
+              which the data needs to be pivoted by.
 
               For example if you have a model with ``country``, ``state``,
               ``county``, ``city``, ``date``, ``rainfall``, ``temperature``
@@ -251,7 +249,7 @@ class PivotDataPool(DataPool):
               series = [
                  {'options': {
                     'source': RainfallData.objects.all(),
-                    'categories': 'state'},
+                    'categories': ['state']},
                   'terms': {
                     'avg_rain': Avg('rainfall')}}],
               top_n_term = 'avg_rain',
@@ -271,7 +269,7 @@ class PivotDataPool(DataPool):
               series = [
                  {'options': {
                     'source': RainfallData.objects.all(),
-                    'categories': 'state'},
+                    'categories': ['state']},
                   'terms': {
                     'avg_rain': Avg('rainfall')}}],
               pareto_term = 'avg_rain')
@@ -282,7 +280,7 @@ class PivotDataPool(DataPool):
           + **sortf** - is a function (or a callable) that is used as a `key`
             when sorting the category values.
 
-            For example, if ``categories = 'month_num'`` and if the months
+            For example, if ``categories = ['month_num']`` and if the months
             need to be sorted in reverse order, then ``sortf`` can be ::
 
               sortf = lambda *x: (-1*x[0],)
@@ -306,7 +304,7 @@ class PivotDataPool(DataPool):
           + **mapf** - is a function (or a callable) that defines how the
             category values need to be mapped.
 
-            For example, let's say ``categories`` is ``'month_num'`` and that
+            For example, let's say ``categories`` is ``['month_num']`` and that
             the category values that are retrieved from your database are
             ``1``, ``2``, ``3``, etc. If you want month *names* as the
             category values instead of month numbers, you can define a
@@ -474,7 +472,7 @@ class PivotDataPool(DataPool):
                 # set(['India', 'China', 'UK', 'France'])
                 lv_set = set()
                 # cv: category value. For example,
-                # if categories = ('continent', 'country'), then
+                # if categories = ['continent', 'country'], then
                 # cv = ('NA', 'USA'), ('Asia', 'India'), etc.
                 # g_vqs_by_cv = grouped ValueQuerySet (grouped by cv)
                 # i.e. grouped by ('NA', 'USA'), ('Asia', 'India'), etc.

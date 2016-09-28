@@ -96,19 +96,17 @@ def _validate_func(func):
                             "Got %s of type %s instead" % (func, type(func)))
 
 
-def _clean_categories(categories, source):
-    if isinstance(categories, six.string_types):
-        categories = [categories]
-    elif isinstance(categories, (tuple, list)):
-        if not categories:
-            raise APIInputError("'categories' tuple or list must contain at "
-                                "least one valid model field. Got %s."
-                                % categories)
-    else:
-        raise APIInputError("'categories' must be one of the following "
-                            "types: basestring, tuple or list. Got %s of "
-                            "type %s instead."
-                            % (categories, type(categories)))
+def _validate_categories(categories, source):
+    """
+        Accepts a list of strings and makes sure these are
+        valid model fields.
+    """
+    if not categories:
+        raise APIInputError("'categories' cannot be empty.")
+
+    if not isinstance(categories, list):
+        raise APIInputError("'categories' must be a list.")
+
     field_aliases = {}
     for c in categories:
         field_aliases[c] = _validate_field_lookup_term(source.model, c,
@@ -190,8 +188,9 @@ def _convert_pdps_to_dict(series_list):
 
             opts['source'] = _validate_source(opts['source'])
             _validate_func(opts['func'])
-            opts['categories'], fa_cat = _clean_categories(opts['categories'],
-                                                           opts['source'])
+            opts['categories'], fa_cat = _validate_categories(
+                                            opts['categories'],
+                                            opts['source'])
             if 'legend_by' in opts.keys():
                 opts['legend_by'], fa_lgby = _validate_legend_by(
                                                 opts['legend_by'],

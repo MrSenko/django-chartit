@@ -20,7 +20,7 @@ def simplepivot(_, title, code, doc, sidebar_items):
           series=[
            {'options': {
               'source': SalesHistory.objects.all(),
-              'categories': 'bookstore__city__city'},
+              'categories': ['bookstore__city__city']},
             'terms': {
               'tot_sales': Sum('sale_qty')}}])
 
@@ -51,7 +51,7 @@ def pivot_with_legend(_, title, code, doc, sidebar_items):
           series=[
            {'options': {
               'source': SalesHistory.objects.all(),
-              'categories': 'bookstore__city__city',
+              'categories': ['bookstore__city__city'],
               'legend_by': ['book__genre__name']},
             'terms': {
               'tot_sales': Sum('sale_qty')}}])
@@ -396,7 +396,7 @@ def pivot_with_datefield(_, title, code, doc, sidebar_items):
                             sale_date__year=2010,
                             sale_date__month=10,
                         ),
-              'categories': 'sale_date'},
+              'categories': ['sale_date']},
             'terms': {
               'tot_sales': Sum('sale_qty')}}])
 
@@ -437,7 +437,7 @@ def pivot_datetime_related(_, title, code, doc, sidebar_items):
                                 book__published_at__year=2010,
                                 book__published_at__month=6,
                               ),
-                    'categories': 'book__published_at',
+                    'categories': ['book__published_at'],
                     'legend_by': ['book__title'],
                 },
                 'terms': {

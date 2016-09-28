@@ -210,7 +210,7 @@ class GoodPivotSeriesListInputTests(TestCase):
         series_input = [{
             'options': {
                 'source': SalesHistory.objects.all(),
-                'categories': 'bookstore__city__state',
+                'categories': ['bookstore__city__state'],
                 'legend_by': ['book__genre__name'],
                 'top_n_per_cat': 2
             },
@@ -280,7 +280,7 @@ class GoodPivotSeriesListInputTests(TestCase):
         series_input = [{
             'options': {
                 'source': SalesHistory.objects.all(),
-                'categories': 'bookstore__city__state',
+                'categories': ['bookstore__city__state'],
                 'legend_by': ['book__genre__name'],
                 'top_n_per_cat': 2
             },
@@ -340,7 +340,7 @@ class GoodPivotSeriesListInputTests(TestCase):
             'terms': {
                 'avg_price': {
                     'source': SalesHistory.objects.all(),
-                    'categories': 'bookstore__city__state',
+                    'categories': ['bookstore__city__state'],
                     'func': Avg('price'),
                     'top_n_per_cat': 3
                 }
@@ -394,7 +394,7 @@ class GoodPivotSeriesListInputTests(TestCase):
             {
                 'options': {
                     'source': SalesHistory.objects.all(),
-                    'categories': 'bookstore__city__state',
+                    'categories': ['bookstore__city__state'],
                     'legend_by': ['book__genre__name'],
                     'top_n_per_cat': 2
                 },
@@ -404,7 +404,7 @@ class GoodPivotSeriesListInputTests(TestCase):
             }, {
                 'options': {
                     'source': SalesHistory.objects.filter(price__gte=10),
-                    'categories': 'bookstore__city__city',
+                    'categories': ['bookstore__city__city'],
                     'top_n_per_cat': 2
                 },
                 'terms': {
@@ -919,7 +919,7 @@ class GoodPivotChartOptionsTests(TestCase):
         series_input = [{
             'options': {
                 'source': SalesHistory.objects.all(),
-                'categories': 'bookstore__city__state',
+                'categories': ['bookstore__city__state'],
                 'legend_by': ['book__genre__name'],
                 'top_n_per_cat': 2
             },
@@ -965,7 +965,7 @@ class BadPivotChartOptionsTests(TestCase):
         series_input = [{
             'options': {
                 'source': SalesHistory.objects.all(),
-                'categories': 'bookstore__city__state',
+                'categories': ['bookstore__city__state'],
                 'legend_by': ['book__genre__name'],
                 'top_n_per_cat': 2
             },
@@ -1376,7 +1376,7 @@ class ChartitTemplateTagTests(TestCase):
         pivot_input = [{
             'options': {
                 'source': SalesHistory.objects.all(),
-                'categories': 'bookstore__city__city',
+                'categories': ['bookstore__city__city'],
             },
             'terms': {
                 'avg_price': Avg('price'),
