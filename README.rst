@@ -29,12 +29,15 @@ Changelog
 =========
 
 * master
-    * **WARNING:** Don't use internally ``QuerySet.values()`` which
-      returns dictionaries, instead iterate over the query set directly
-      and populate chart data points. If you pass ``QuerySet.values()`` as the
-      source for your charts it will very likely break. Try using
+    * **WARNING:** We no longer use internally ``QuerySet.values()`` which
+      returns dictionaries. Instead we iterate over the query set directly
+      and populate chart data points! **If you pass ``QuerySet.values()`` as the
+      source for your charts they will very likely break!** Try using
       ``QuerySet.distinct()`` and ``QuerySet.only()`` instead! This change is
       required as a feature enablement!
+    * ``DataPool`` now supports ``RawQuerySet`` as data source. Fixes
+      `#44 <https://github.com/chartit/django-chartit/issues/44>`_.
+      ``RawQuerySet`` is **not** supported for ``PivotDataPool``!
     * README now tells how to execute ``demoproject/``
 
 * 0.2.7 (September 14, 2016)
@@ -80,7 +83,8 @@ Changelog
     * Merged with *django-chartit2* fork by
       `Grant McConnaughey <https://github.com/grantmcconnaughey>`_ which adds
       Python 3 and latest Django 1.8.x and 1.9.x support
-    * Allow dictionary fields in conjunction with lambda fields. Closes #26
+    * Allow dictionary fields in conjunction with lambda fields. Closes
+      `#26 <https://github.com/chartit/django-chartit/issues/26>`_
     * Documentation improvements
     * Lots of code cleanups and style improvements
 

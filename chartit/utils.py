@@ -1,5 +1,6 @@
 from functools import reduce
 
+
 def _getattr(obj, attr):
     """Recurses through an attribute chain to get the ultimate value."""
     try:

@@ -361,8 +361,8 @@ class Chart(BaseChart):
                         if x_mts:
                             if x_mapf:
                                 data = ((x_mapf(_getattr(value_obj, x_field)),
-                                         [_getattr(value_obj, y_field) for y_field
-                                          in y_fields])
+                                         [_getattr(value_obj, y_field)
+                                          for y_field in y_fields])
                                         for value_obj in x_vqs)
                                 sort_key = ((lambda x_y: x_sortf(x_y[0]))
                                             if x_sortf is not None else None)
@@ -372,8 +372,8 @@ class Chart(BaseChart):
                                         if x_sortf is not None else None)
                             data = sorted(
                                     ((_getattr(value_obj, x_field),
-                                     [_getattr(value_obj, y_field) for y_field in
-                                      y_fields])
+                                     [_getattr(value_obj, y_field)
+                                      for y_field in y_fields])
                                      for value_obj in x_vqs),
                                     key=sort_key)
                             if x_mapf:
