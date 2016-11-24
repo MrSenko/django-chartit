@@ -3,6 +3,7 @@ import copy
 from collections import defaultdict, OrderedDict
 from itertools import groupby
 
+from .utils import _getattr
 from .highcharts import HCOptions
 from .validation import clean_pcso, clean_cso, clean_x_sortf_mapf_mts
 from .exceptions import APIInputError
@@ -359,10 +360,10 @@ class Chart(BaseChart):
                                               len(x_y_terms_tuples) == 1):
                         if x_mts:
                             if x_mapf:
-                                data = ((x_mapf(value_dict[x_field]),
-                                         [value_dict[y_field] for y_field
+                                data = ((x_mapf(_getattr(value_obj, x_field)),
+                                         [_getattr(value_obj, y_field) for y_field
                                           in y_fields])
-                                        for value_dict in x_vqs)
+                                        for value_obj in x_vqs)
                                 sort_key = ((lambda x_y: x_sortf(x_y[0]))
                                             if x_sortf is not None else None)
                                 data = sorted(data, key=sort_key)
@@ -370,10 +371,10 @@ class Chart(BaseChart):
                             sort_key = ((lambda x_y: x_sortf(x_y[1]))
                                         if x_sortf is not None else None)
                             data = sorted(
-                                    ((value_dict[x_field],
-                                     [value_dict[y_field] for y_field in
+                                    ((_getattr(value_obj, x_field),
+                                     [_getattr(value_obj, y_field) for y_field in
                                       y_fields])
-                                     for value_dict in x_vqs),
+                                     for value_obj in x_vqs),
                                     key=sort_key)
                             if x_mapf:
                                 data = [(x_mapf(x), y) for (x, y) in data]
@@ -412,10 +413,10 @@ class Chart(BaseChart):
                                     opts['data'].append(y_value)
                             self.hcoptions['series'].extend(y_hco_list)
                     else:
-                        data = ((value_dict[x_field],
-                                 [value_dict[y_field] for y_field in
+                        data = ((_getattr(value_obj, x_field),
+                                 [_getattr(value_obj, y_field) for y_field in
                                   y_fields])
-                                for value_dict in x_vqs)
+                                for value_obj in x_vqs)
 
                         y_terms_multi.extend(y_terms)
                         y_fields_multi.extend(y_fields)

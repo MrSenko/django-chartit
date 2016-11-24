@@ -1,3 +1,14 @@
+from functools import reduce
+
+def _getattr(obj, attr):
+    """Recurses through an attribute chain to get the ultimate value."""
+    try:
+        return reduce(getattr, attr.split('__'), obj)
+    except AttributeError:
+        # annotations return dictionaries where keys have double underscores
+        return getattr(obj, attr)
+
+
 def _convert_to_rdd(obj):
     """Accepts a dict or a list of dicts and converts it to a
     RecursiveDefaultDict."""

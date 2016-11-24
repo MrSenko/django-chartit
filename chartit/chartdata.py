@@ -132,13 +132,12 @@ class DataPool(object):
         # query_groups is a list of lists.
         for tk_td_tuples in self.query_groups:
             src = tk_td_tuples[0][1]['source']
-            vqs = src.values(*(td['field'] for (tk, td) in tk_td_tuples))
             vqs2 = []
-            for v in vqs:
+            for v in src:
                 for (_, td) in tk_td_tuples:
                     f = td.get('fn')
                     if f:
-                        v[td['field']] = f(v[td['field']])
+                        setattr(v, td['field'], f(getattr(v, td['field'])))
                 vqs2.append(v)
             yield tk_td_tuples, vqs2
 

@@ -29,6 +29,12 @@ Changelog
 =========
 
 * master
+    * **WARNING:** Don't use internally ``QuerySet.values()`` which
+      returns dictionaries, instead iterate over the query set directly
+      and populate chart data points. If you pass ``QuerySet.values()`` as the
+      source for your charts it will very likely break. Try using
+      ``QuerySet.distinct()`` and ``QuerySet.only()`` instead! This change is
+      required as a feature enablement!
     * README now tells how to execute ``demoproject/``
 
 * 0.2.7 (September 14, 2016)

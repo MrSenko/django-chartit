@@ -1004,13 +1004,19 @@ def avg_count(_, title, code, doc, sidebar_items):
     ------------------------------------------
     This chart plots the average book rating in each genre
     together with the number of books in each genre.
+
+    NOTE: We need to use distinct('genre') which isn't supported by
+    the SQLite backend. When using only() the results are skewed because
+    Book.id field is part of the query!
     """
 
     # start_code
     ds = DataPool(
             series=[{
                 'options': {
-                    'source': Book.objects.values('genre').annotate(
+                    # SQLite doesn't support DISTINCT ON
+                    # 'source': Book.objects.distinct('genre').annotate(
+                    'source': Book.objects.only('genre').annotate(
                                 Avg('rating'),
                                 Count('genre')
                               )
