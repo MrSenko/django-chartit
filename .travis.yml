@@ -2,8 +2,8 @@ after_success:
 - coveralls
 before_install:
 - pip install coveralls
-- [ -z "$_COMMAND" ] && export _COMMAND=coverage
-- [ -z "$_DJANGO" ] && export _DJANGO=1.10.4
+- if [ -z "$_COMMAND" ]; then export _COMMAND=coverage; fi
+- if [ -z "$_DJANGO" ]; then export _DJANGO=1.10.4; fi
 env:
 - !!python/unicode '_DJANGO=1.10'
 - !!python/unicode '_DJANGO=1.10.2'
