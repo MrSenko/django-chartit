@@ -1,8 +1,6 @@
 import sys
 import warnings
 from collections import defaultdict, OrderedDict
-from django.db.models.query import RawQuerySet
-from django.core.exceptions import FieldError
 from itertools import groupby, chain, islice
 from operator import itemgetter
 from .utils import _getattr
@@ -133,18 +131,8 @@ class DataPool(object):
         # query_groups is a list of lists.
         for tk_td_tuples in self.query_groups:
             src = tk_td_tuples[0][1]['source']
-            try:
-                # RawQuerySet doesn't support values
-                if isinstance(src, RawQuerySet):
-                    vqs = src
-                else:
-                    vqs = src.values(*(td['field']
-                                       for (tk, td) in tk_td_tuples))
-            except FieldError:
-                # model attributes can't be resolved into fields
-                vqs = src
             vqs2 = []
-            for v in vqs:
+            for v in src:
                 for (_, td) in tk_td_tuples:
                     f = td.get('fn')
                     if f:

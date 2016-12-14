@@ -28,9 +28,16 @@ pivoted by specific column(s).
 Changelog
 =========
 
-* master
+* 0.3.0 (unreleased yet)
     * Enable pylint during testing but don't block Travis-CI on failures. Closes
       `#42 <https://github.com/chartit/django-chartit/issues/42>`_.
+    * Remove internal use of ``.values()`` inside ``DataPool`` class.
+      **WARNING:** this causes chartit to operate internally on objects, not
+      dictionaries and may break existing code or negatively impact performance!
+      Previously chartit used to select all terms behind the scenes using a
+      ``.values(**terms)`` call. Now you will have to make sure all terms are
+      included in the query. If you require unique values then make sure you select
+      them properly.
 
 * 0.2.8 (December 4, 2016)
     * ``PivotChart`` and ``PivotDataPool`` **will be deprecated soon**. Both

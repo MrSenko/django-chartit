@@ -1010,7 +1010,7 @@ def avg_count(_, title, code, doc, sidebar_items):
     ds = DataPool(
             series=[{
                 'options': {
-                    'source': Book.objects.values('genre').annotate(
+                    'source': Book.objects.values('genre__name').annotate(
                                 Avg('rating'),
                                 Count('genre')
                               )
